@@ -11,7 +11,7 @@ def ping():
 
 @route('/ping', method='POST')
 def post():
-    body = request.forms()
+    body = request.forms
     r = HTTPResponse(status=200, body=body)
     return r
 
