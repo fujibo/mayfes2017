@@ -1,4 +1,5 @@
 from bottle import route, run, template, request, static_file, HTTPResponse
+import os
 import json
 
 @route('/ping', method='GET')
