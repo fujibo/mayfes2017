@@ -1,10 +1,11 @@
-from bottle import route, run, template, request, static_file, HTTPResponse 
+from bottle import route, run, template, request, static_file, HTTPResponse
+from datetime import datetime
 import os
 import json
 
 @route('/ping', method='GET')
 def ping():
-    body = {"res":"pong"}
+    body = {datetime.now().strftime("%Y/%m/%d %H:%M:%S"):"pong"}
     r = HTTPResponse(status=200, body=json.dumps(body))
     r.set_header('Content-Type', 'application/json')
     return r
