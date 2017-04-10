@@ -1,0 +1,3 @@
+#!/bin/bash
+source activate caffe
+python test.py -new
