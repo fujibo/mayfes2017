@@ -1,11 +1,15 @@
 $(function() {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
+
     var dragging = false;
 
     var borderWidth = 1;
     var canvasX = $("#canvas").offset().left + borderWidth; 
     var canvasY = $("#canvas").offset().top + borderWidth;
+
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     var prevX = null;
     var prevY = null;
@@ -14,14 +18,10 @@ $(function() {
         dragging = true;
     })
     .mouseup(function() {
-        dragging = false;
-        prevX = null;
-        prevY = null;
+        if(dragging) finishDrawing();
     })
     .mouseout(function() {
-        dragging = false;
-        prevX = null;
-        prevY = null;
+        if(dragging) finishDrawing();
     })
     .mousemove(function(event) {
         if(dragging) {
@@ -39,24 +39,45 @@ $(function() {
             prevY = y;
         }
     });
-    setImage(1, "sample.jpg", 200, 200, 1000, 1000);
-    setImage(2, "sample.jpg", 300, 400, 600, 700);
-    setImage(3, "sample.jpg", 600, 600, 700, 700);
+    setImage(1, "image/sample.jpg", 200, 200, 1000, 1000);
+    setImage(2, "image/sample.jpg", 300, 400, 600, 700);
+    setImage(3, "image/sample.jpg", 600, 600, 700, 700);
+
+    function finishDrawing() {
+        dragging = false;
+        prevX = null;
+        prevY = null;
+        var pngData = canvas.toDataURL().split(',')[1];
+        console.log(pngData);
+        $.ajax({
+            url: "http://path/to/server/",
+            type: "POST",
+            cache: false,
+            data: {
+                "image": pngData
+            },
+            dataType: "json",
+            success: handleResponse
+        });
+    }
+
+    function handleResponse(data, dataType) {
+        // TODO: show images
+    }
 
     function setImage(num, path, left, top, right, bottom) {
         // size in html
         var width = $("#image" + num).width();
         var height = $("#image" + num).height();
-        var selector = "#image" + num + " img";
-        $(selector).attr("src", "image/" + path);
+        var $img = $("#image" + num + " img");
+        $img.attr("src", path);
         // original size of the image
-        var origWidth = $(selector).width();
-        var origHeight = $(selector).height();
+        var origWidth = $img.width();
+        var origHeight = $img.height();
 
         var ratio = width / (right - left);
-        $(selector)
-        .width(origWidth * ratio)
-        .css("left", "-" + (left * ratio) + "px")
-        .css("top", "-" + (top * ratio) + "px");
+        $img.width(origWidth * ratio)
+            .css("left", "-" + (left * ratio) + "px")
+            .css("top", "-" + (top * ratio) + "px");
     }
 });
