@@ -50,7 +50,7 @@ $(function() {
         var pngData = canvas.toDataURL().split(',')[1];
         console.log(pngData);
         $.ajax({
-            url: "http://path/to/server/",
+            url: "http://localhost:8080/searching",
             type: "POST",
             cache: false,
             data: {
