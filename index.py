@@ -1,8 +1,23 @@
-from bottle import route, run, template, request, static_file, HTTPResponse
+from bottle import route, run, template, request, static_file, HTTPResponse, TEMPLATE_PATH
 from datetime import datetime
 import os
 import json
 import base64
+TEMPLATE_PATH.append("./WebGUI")
+@route('/')
+def index():
+    return template("index")
+    #return static_file('index.html', root='./WebGUI')
+
+@route('/js/<filename>')
+def js_static(filename):
+    return static_file(filename, root='./WebGUI/js')
+@route('/css/<filename>')
+def js_static(filename):
+    return static_file(filename, root='./WebGUI/css')
+@route('/image/<filename>')
+def js_static(filename):
+    return static_file(filename, root='./WebGUI/image')
 
 @route('/ping', method='GET')
 def ping():
