@@ -2,7 +2,15 @@
     overflow: hidden;
 }
 
-#btn_undo {
+#slider {
+    margin: 0 0 5px 0;
+}
+
+#tools_group {
+    margin: 5px;
+}
+
+#edit_group {
     margin: 5px;
 }
 

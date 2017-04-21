@@ -5,6 +5,16 @@ $(function() {
             if(e.keyCode == 90) undo();
         }
     });
+    var is_pen = true;
+    $(".tools").checkboxradio();
+    $("#radio_pen").click(function() {
+        is_pen = true;
+    });
+    $("#radio_erase").click(function() {
+        is_pen = false;
+    });
+    $("#radio_pen").click();
+    $("#tools_group").controlgroup();
     $("#lineWidth").text(lineWidth);
     var slider = $("#slider").slider({
         min: 1,
@@ -25,6 +35,7 @@ $(function() {
     $("#btn_clear").button().click(function() {
         clear();
     });
+    $("#edit_group").controlgroup();
 
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
@@ -80,6 +91,7 @@ $(function() {
             var x = event.pageX - canvasX;
             var y = event.pageY - canvasY;
             ctx.beginPath();
+            if(!is_pen) ctx.strokeStyle = "white";
             ctx.lineWidth = lineWidth;
             ctx.lineCap = "round";
             if(prevX == null) {
