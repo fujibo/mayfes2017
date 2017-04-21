@@ -32,9 +32,9 @@ if GPU:
     cuda.get_device(gpu_device).use()
     xp = cuda.cupy
 
-net = caffe.CaffeFunction(PRETRAINED)
+model = caffe.CaffeFunction(PRETRAINED)
 if GPU:
-    net.to_gpu(gpu_device)
+    model.to_gpu(gpu_device)
 
 FEATURE_PATH = FEATURE + "/"
 RESULT_PATH = "result_chainer/" + FEATURE + "/"
@@ -57,7 +57,7 @@ mean_image = np.load(MEAN_FILE)
 mean_image = cv2.resize(mean_image.transpose(1, 2, 0), (in_size, in_size)).transpose(2, 0, 1)
 
 image = image.transpose(2, 0, 1).astype(np.float32) - mean_image
-
+image = image.astype(np.float32)
 if GPU:
     image = chainer.Variable(xp.array([image]), volatile=True)
 else:
