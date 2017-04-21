@@ -19,6 +19,12 @@ $(function() {
     $("#btn_undo").button().click(function() {
         undo();
     });
+    $("#btn_redo").button().click(function() {
+        redo();
+    });
+    $("#btn_clear").button().click(function() {
+        clear();
+    });
 
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
@@ -28,6 +34,7 @@ $(function() {
 
     var NUM_UNDO = 10;
     var undoImages = [];
+    var redoImages = [];
 
     var image_dragging = null;
 
@@ -35,22 +42,16 @@ $(function() {
     var canvasX = $("#canvas").offset().left + borderWidth; 
     var canvasY = $("#canvas").offset().top + borderWidth;
 
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    saveForUndo();
-
     var prevX = null;
     var prevY = null;
+
+    clear();
 
     $("#canvas").mousedown(function() {
         canvas_dragging = true;
     })
     .mouseup(function() {
-        if(canvas_dragging) {
-            saveForUndo();
-            finishDrawing();
-        }
+        if(canvas_dragging) onDraw();
         if(image_dragging != null) {
             var image = new Image();
             var $target_div = $("#image" + image_dragging);
@@ -67,15 +68,11 @@ $(function() {
             ctx.drawImage(image, -left * ratio, -top * ratio, div_width * ratio, div_height * ratio,
                 0, 0, $("#canvas").width(), $("#canvas").height());
             image_dragging = null;
-            saveForUndo();
-            finishDrawing();
+            onDraw();
         }
     })
     .mouseleave(function() {
-        if(canvas_dragging) {
-            saveForUndo();
-            finishDrawing();
-        }
+        if(canvas_dragging) onDraw();
         in_canvas = false;
     })
     .mousemove(function(event) {
@@ -140,6 +137,18 @@ $(function() {
         console.log(data);
     }
 
+    function clear() {
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        onDraw();
+    }
+
+    function onDraw() {
+        if(redoImages.length > 0) redoImages = [];
+        saveForUndo();
+        finishDrawing();
+    }
+
     function saveForUndo() {
         if(undoImages.length >= NUM_UNDO) {
             undoImages.shift();
@@ -149,8 +158,18 @@ $(function() {
 
     function undo() {
         if(undoImages.length >= 2) {
+            redoImages.push(undoImages[undoImages.length - 1]);
             undoImages.pop();
             ctx.putImageData(undoImages[undoImages.length - 1], 0, 0);
+            finishDrawing();
+        }
+    }
+
+    function redo() {
+        if(redoImages.length >= 1) {
+            ctx.putImageData(redoImages[redoImages.length - 1], 0, 0);
+            redoImages.pop();
+            saveForUndo();
             finishDrawing();
         }
     }
