@@ -26,7 +26,7 @@ in_size = 227 # image_dims
 
 mean_image = np.load(MEAN_FILE)
 
-GPU = True
+GPU = False
 if GPU:
     gpu_device = 0
     cuda.get_device(gpu_device).use()
@@ -45,54 +45,63 @@ titles = ["Belmondo"]
 #titles = ["Belmondo", "LoveHina_vol14", "GOOD_KISS_Ver2", "YamatoNoHane", "Arisa", "BakuretsuKungFuGirl", "AisazuNihaIrarenai"]
 number = len(titles)
 
-QUERY_PATH = sys.argv[1]
-QUERY_NAME = sys.argv[2]
-if not os.path.isdir(RESULT_PATH + QUERY_NAME):
-    os.mkdir(RESULT_PATH + QUERY_NAME)
+def query1(query_path):
+    QUERY_PATH = query_path
+    global QUERY_NAME
+    QUERY_NAME = "temp"
+    if not os.path.isdir(RESULT_PATH + QUERY_NAME):
+        os.mkdir(RESULT_PATH + QUERY_NAME)
 
-image = cv2.imread(QUERY_PATH)
-image = cv2.resize(image, (in_size, in_size))
+    image = cv2.imread(QUERY_PATH)
+    image = cv2.resize(image, (in_size, in_size))
 
-mean_image = np.load(MEAN_FILE)
-mean_image = cv2.resize(mean_image.transpose(1, 2, 0), (in_size, in_size)).transpose(2, 0, 1)
+    mean_image = np.load(MEAN_FILE)
+    mean_image = cv2.resize(mean_image.transpose(1, 2, 0), (in_size, in_size)).transpose(2, 0, 1)
 
-image = image.transpose(2, 0, 1).astype(np.float32) - mean_image
-image = image.astype(np.float32)
-if GPU:
-    image = chainer.Variable(xp.array([image]), volatile=True)
-else:
-    image = chainer.Variable(np.array([image]), volatile=True)
+    image = image.transpose(2, 0, 1).astype(np.float32) - mean_image
+    image = image.astype(np.float32)
+    if GPU:
+        image = chainer.Variable(xp.array([image]), volatile=True)
+    else:
+        image = chainer.Variable(np.array([image]), volatile=True)
 
-query = model(inputs={'data': image}, outputs=['fc6'], disable=['relu6', 'drop6'], train=False)[0]
+    global query
+    query = model(inputs={'data': image}, outputs=['fc6'], disable=['relu6', 'drop6'], train=False)[0]
 
-# query: 1 x 4096
-query = query.data.flatten()
-query = chainer.cuda.to_cpu(query)
+    # query: 1 x 4096
+    query = query.data.flatten()
+    query = chainer.cuda.to_cpu(query)
 
 distance = []
 data = []
-
+feature_value = []
 for title in titles:
     propasals = np.load(FEATURE_PATH + title + ".npz")
-    new_proposals = {}
     for key, windows in propasals.iteritems():
-        page = key.split("_p")[1]
         for window in windows:
-            d = dis.cosine(window[4:], query)
-            distance.append(d)
-            data.append([key, window[:4]])
+            title = key.split("_p")[0]
+            page = key.split("_p")[1]
+            OLD_PATH = title + "/" + title + "_" + str(page).zfill(3) + ".jpg"
+            feature_value.append(window[4:])
+            data.append([OLD_PATH,window[:4]])
 
-distance_index = np.argsort(distance)
-for j, v in enumerate(distance_index[:100]):
-    title = data[v][0].split("_p")[0]
-    page = data[v][0].split("_p")[1]
-    window = data[v][1]
-    x1 = window[0]
-    y1 = window[1]
-    x2 = window[2]
-    y2 = window[3]
-    NEW_PATH = RESULT_PATH + QUERY_NAME + "/" + str(j) + "_" + title + "_" + str(page).zfill(3) + ".jpg"
-    OLD_PATH = title + "/" + title + "_" + str(page).zfill(3) + ".jpg"
+feature_value = np.array(feature_value)
+#feature_valueが特徴量をいれた配列、dataが
+#ここでdistance計算？
+# distance_index = np.argsort(distance)
+# for j, v in enumerate(distance_index[:100]):
 
-    img = cv2.imread(OLD_PATH)
-    cv2.imwrite(NEW_PATH, img[y1:y2, x1:x2])
+    # window = data[v][1]
+    # x1 = window[0]
+    # y1 = window[1]
+    # x2 = window[2]
+    # y2 = window[3]
+    # NEW_PATH = RESULT_PATH + QUERY_NAME + "/" + str(j) + "_" + title + "_" + str(page).zfill(3) + ".jpg"
+
+
+
+    result_data = {"path": OLD_PATH, "title":title, "page":str(page).zfill(3), "x1":x1, "y1":y1, "x2":x2, "y2":y2}
+    results_list.append(result_data)
+    print(results_list)
+    #img = cv2.imread(OLD_PATH)
+    #cv2.imwrite(NEW_PATH, img[y1:y2, x1:x2])
