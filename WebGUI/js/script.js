@@ -1,9 +1,33 @@
 $(function() {
+    var lineWidth = 2;
+    $(window).keydown(function(e) {
+        if(e.ctrlKey) {
+            if(e.keyCode == 90) undo();
+        }
+    });
+    $("#lineWidth").text(lineWidth);
+    var slider = $("#slider").slider({
+        min: 1,
+        max: 10,
+        range: "min",
+        value: lineWidth,
+        slide: function(event, ui) {
+            lineWidth = ui.value;
+            $("#lineWidth").text(lineWidth);
+        }
+    });
+    $("#btn_undo").button().click(function() {
+        undo();
+    });
+
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
 
     var canvas_dragging = false;
     var in_canvas = false;
+
+    var NUM_UNDO = 10;
+    var undoImages = [];
 
     var image_dragging = null;
 
@@ -14,6 +38,8 @@ $(function() {
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+    saveForUndo();
+
     var prevX = null;
     var prevY = null;
 
@@ -21,7 +47,10 @@ $(function() {
         canvas_dragging = true;
     })
     .mouseup(function() {
-        if(canvas_dragging) finishDrawing();
+        if(canvas_dragging) {
+            saveForUndo();
+            finishDrawing();
+        }
         if(image_dragging != null) {
             var image = new Image();
             var $target_div = $("#image" + image_dragging);
@@ -38,10 +67,15 @@ $(function() {
             ctx.drawImage(image, -left * ratio, -top * ratio, div_width * ratio, div_height * ratio,
                 0, 0, $("#canvas").width(), $("#canvas").height());
             image_dragging = null;
+            saveForUndo();
+            finishDrawing();
         }
     })
     .mouseleave(function() {
-        if(canvas_dragging) finishDrawing();
+        if(canvas_dragging) {
+            saveForUndo();
+            finishDrawing();
+        }
         in_canvas = false;
     })
     .mousemove(function(event) {
@@ -49,6 +83,8 @@ $(function() {
             var x = event.pageX - canvasX;
             var y = event.pageY - canvasY;
             ctx.beginPath();
+            ctx.lineWidth = lineWidth;
+            ctx.lineCap = "round";
             if(prevX == null) {
                 ctx.moveTo(x, y);
             } else {
@@ -101,6 +137,22 @@ $(function() {
 
     function handleResponse(data, dataType) {
         // TODO: show images
+        console.log(data);
+    }
+
+    function saveForUndo() {
+        if(undoImages.length >= NUM_UNDO) {
+            undoImages.shift();
+        }
+        undoImages.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    }
+
+    function undo() {
+        if(undoImages.length >= 2) {
+            undoImages.pop();
+            ctx.putImageData(undoImages[undoImages.length - 1], 0, 0);
+            finishDrawing();
+        }
     }
 
     function setImage(num, path, left, top, right, bottom) {
@@ -108,11 +160,6 @@ $(function() {
         var width = $("#image" + num).width();
         var height = $("#image" + num).height();
         var $img = $("#image" + num + " img");
-        
-        // original size of the image
-        var origWidth = $img.width();
-        var origHeight = $img.height();
-        var ratio = width / (right - left);
         
         var image = new Image();
         image.onload = function() {

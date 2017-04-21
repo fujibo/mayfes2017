@@ -2,15 +2,24 @@
 <head>
 <title>tenji</title>
 <link href="css/style.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.2.0.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="js/script.js" type="text/javascript"></script>
 </head>
 <body>
     <div id="wrapper">
-        <canvas id="canvas" width="300" height="300"></canvas>
-        <div id="image1" class="images"><img /></div>
-        <div id="image2" class="images"><img /></div>
-        <div id="image3" class="images"><img /></div>
+        <div id="left">
+            <canvas id="canvas" width="300" height="300"></canvas>
+            <p style="text-align: left"><span>線の太さ: </span><span id="lineWidth">1</span></p>
+            <div id="slider"></div>
+            <button id="btn_undo" class="ui-button ui-widget ui-corner-all">Undo</button>
+        </div>
+        <div id="right">
+            <div id="image1" class="images"><img /></div>
+            <div id="image2" class="images"><img /></div>
+            <div id="image3" class="images"><img /></div>
+        </div>
     </div>
 </body>
 </html>
