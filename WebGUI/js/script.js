@@ -184,8 +184,8 @@ $(function() {
         image.onload = function() {
             $img.attr("src", path);
             // original size of the image
-            var origWidth = $img.width();
-            var origHeight = $img.height();
+            var origWidth = image.width;
+            var origHeight = image.height;
             var ratio = width / (right - left);
             $img.width(origWidth * ratio)
                 .css("left", "-" + (left * ratio) + "px")
