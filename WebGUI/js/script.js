@@ -91,7 +91,7 @@ $(function() {
             var x = event.pageX - canvasX;
             var y = event.pageY - canvasY;
             ctx.beginPath();
-            if(!is_pen) ctx.strokeStyle = "white";
+            ctx.strokeStyle = is_pen ? "black" : "white";
             ctx.lineWidth = lineWidth;
             ctx.lineCap = "round";
             if(prevX == null) {
