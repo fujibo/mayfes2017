@@ -2,6 +2,7 @@ from bottle import route, run, template, request, static_file, HTTPResponse
 from datetime import datetime
 import os
 import json
+import base64
 
 @route('/ping', method='GET')
 def ping():
@@ -16,6 +17,25 @@ def post():
     r = HTTPResponse(status=200, body=body)
     return r
 
+@route('/searching', method='POST')
+def search():
+    
+    upload = request.forms.get('image')
+    #name, ext = os.path.splitext(upload.image)
+    print(upload)
+    #upload.save("/tmp", overwrite=Ture
+    decfile = base64.b64decode(upload)
+    fout = open('temp.png', 'wb')
+    fout.write(decfile)
+    fout.close
+    
+    body = {"img":[{"path":"string", "title":"string", "page": 0, "x1":0, "x2":0, "y1":0, "y2":0}]} 
+    r = HTTPResponse(status=200, body=json.dumps(body))
+    return r
+
+
+
+
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    run(host = '0.0.0.0', port = port)
+    port = int(os.environ.get('PORT', 8080))
+    run(port = port)
