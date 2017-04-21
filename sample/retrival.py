@@ -77,12 +77,10 @@ data = []
 feature_value = []
 for title in titles:
     propasals = np.load(FEATURE_PATH + title + ".npz")
-
     for key, windows in propasals.iteritems():
-
         for window in windows:
-            title = data[v][0].split("_p")[0]
-            page = data[v][0].split("_p")[1]
+            title = key.split("_p")[0]
+            page = key.split("_p")[1]
             OLD_PATH = title + "/" + title + "_" + str(page).zfill(3) + ".jpg"
             feature_value.append(window[4:])
             data.append([OLD_PATH,window[:4]])
