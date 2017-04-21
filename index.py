@@ -34,7 +34,7 @@ def post():
 
 @route('/searching', method='POST')
 def search():
-    
+
     upload = request.forms.get('image')
     #name, ext = os.path.splitext(upload.image)
     print(upload)
@@ -43,8 +43,10 @@ def search():
     fout = open('temp.png', 'wb')
     fout.write(decfile)
     fout.close
-    
-    body = {"img":[{"path":"string", "title":"string", "page": 0, "x1":0, "x2":0, "y1":0, "y2":0}]} 
+
+    body = {"imgs":[{"path":"/image/sample.jpg", "title":"string", "page": 0, "x1":0, "x2":400, "y1":0, "y2":400},
+    {"path":"/image/sample.jpg", "title":"string", "page": 0, "x1":0, "x2":400, "y1":0, "y2":400},
+    {"path":"/image/sample.jpg", "title":"string", "page": 0, "x1":0, "x2":400, "y1":0, "y2":400}]} 
     r = HTTPResponse(status=200, body=json.dumps(body))
     return r
 

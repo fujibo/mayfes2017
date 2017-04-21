@@ -50,7 +50,7 @@ $(function() {
     var image_dragging = null;
 
     var borderWidth = 1;
-    var canvasX = $("#canvas").offset().left + borderWidth; 
+    var canvasX = $("#canvas").offset().left + borderWidth;
     var canvasY = $("#canvas").offset().top + borderWidth;
 
     var prevX = null;
@@ -108,7 +108,7 @@ $(function() {
     .mouseover(function() {
         in_canvas = true;
     });
-    
+
     setImage(1, "image/sample.jpg", 100, 100, 200, 200);
     setImage(2, "image/sample.jpg", 0, 0, 400, 400);
     setImage(3, "image/sample.jpg", 200, 0, 600, 400);
@@ -119,7 +119,7 @@ $(function() {
     .mouseup(function() {
         if(!in_canvas) image_dragging = null;
     });
-    
+
     $("div .images").each(function(i, element) {
         $(element).mousedown(function(event) {
             event.preventDefault();
@@ -139,8 +139,18 @@ $(function() {
             data: {
                 "image": pngData
             },
-            dataType: "json",
-            success: handleResponse
+            dataType: "json"
+        })
+        .done(function(res) {
+            var imgs = res.imgs;
+            $.each(imgs, function(i, img) {
+                setImage(i+1, img.path, img.x1, img.y1, img.x2, img.y2);
+            });
+        });
+        $("div .images").map(function(idx, element) {
+          $(element).css({"position":"relative"})
+          $(element).children("img").attr({"src":"image/ajax-loader.gif"});
+          $(element).children("img").css({"position":"absolute", "top":0, "right":0, "bottom":0, "left":0, "margin":"auto", "width":60});
         });
     }
 
@@ -191,14 +201,15 @@ $(function() {
         var width = $("#image" + num).width();
         var height = $("#image" + num).height();
         var $img = $("#image" + num + " img");
-        
+
+
         var image = new Image();
         image.onload = function() {
             $img.attr("src", path);
             // original size of the image
-            var origWidth = image.width;
-            var origHeight = image.height;
-            var ratio = width / (right - left);
+            var origWidth = $img.width();
+            var origHeight = $img.height();
+          var ratio = width / (right - left);
             $img.width(origWidth * ratio)
                 .css("left", "-" + (left * ratio) + "px")
                 .css("top", "-" + (top * ratio) + "px");
