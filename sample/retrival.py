@@ -81,23 +81,25 @@ for title in titles:
     for key, windows in propasals.iteritems():
 
         for window in windows:
+            title = data[v][0].split("_p")[0]
+            page = data[v][0].split("_p")[1]
+            OLD_PATH = title + "/" + title + "_" + str(page).zfill(3) + ".jpg"
             feature_value.append(window[4:])
-            data.append([key,window[:4]])
+            data.append([OLD_PATH,window[:4]])
 
 feature_value = np.array(feature_value)
 #feature_valueが特徴量をいれた配列、dataが
 #ここでdistance計算？
-distance_index = np.argsort(distance)
-for j, v in enumerate(distance_index[:100]):
-    title = data[v][0].split("_p")[0]
-    page = data[v][0].split("_p")[1]
-    window = data[v][1]
-    x1 = window[0]
-    y1 = window[1]
-    x2 = window[2]
-    y2 = window[3]
-    NEW_PATH = RESULT_PATH + QUERY_NAME + "/" + str(j) + "_" + title + "_" + str(page).zfill(3) + ".jpg"
-    OLD_PATH = title + "/" + title + "_" + str(page).zfill(3) + ".jpg"
+# distance_index = np.argsort(distance)
+# for j, v in enumerate(distance_index[:100]):
+
+    # window = data[v][1]
+    # x1 = window[0]
+    # y1 = window[1]
+    # x2 = window[2]
+    # y2 = window[3]
+    # NEW_PATH = RESULT_PATH + QUERY_NAME + "/" + str(j) + "_" + title + "_" + str(page).zfill(3) + ".jpg"
+
 
 
     result_data = {"path": OLD_PATH, "title":title, "page":str(page).zfill(3), "x1":x1, "y1":y1, "x2":x2, "y2":y2}
