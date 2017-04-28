@@ -76,6 +76,10 @@ $(function() {
             var ratio = image.width / img_width;
             var left = parseFloat($target_img.css("left"));
             var top = parseFloat($target_img.css("top"));
+            // clear before paste
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
             ctx.drawImage(image, -left * ratio, -top * ratio, div_width * ratio, div_height * ratio,
                 0, 0, $("#canvas").width(), $("#canvas").height());
             image_dragging = null;
@@ -109,8 +113,8 @@ $(function() {
         in_canvas = true;
     });
 
-    setImage(1, "image/sample.jpg", 100, 100, 200, 200);
-    setImage(2, "image/sample.jpg", 0, 0, 400, 400);
+    setImage(1, "image/sample.jpg", 100, 0, 200, 400);
+    setImage(2, "image/sample.jpg", 0, 0, 640, 400);
     setImage(3, "image/sample.jpg", 200, 0, 600, 400);
 
     $("html").mouseleave(function() {
@@ -203,10 +207,22 @@ $(function() {
             // original size of the image
             var origWidth = image.width;
             var origHeight = image.height;
+            if(right - left > bottom - top) {
+                var expand = ((right - left) - (bottom - top)) / 2;
+                bottom += expand;
+                top -= expand;
+            } else {
+                var expand = ((bottom - top) - (right - left)) / 2;
+                left -= expand;
+                right += expand;
+            }
             var ratio = width / (right - left);
+            var posX = -left * ratio;
+            var posY = -top * ratio;
             $img.width(origWidth * ratio)
-                .css("left", "-" + (left * ratio) + "px")
-                .css("top", "-" + (top * ratio) + "px");
+                .css("left", posX + "px")
+                .css("top", posY + "px")
+                .css("margin", "0px");
         };
         image.src = path;
     }
