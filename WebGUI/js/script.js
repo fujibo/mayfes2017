@@ -1,4 +1,6 @@
 $(function() {
+    var imageDir = "";
+
     var lineWidth = 2;
     $(window).keydown(function(e) {
         if(e.ctrlKey) {
@@ -125,7 +127,7 @@ $(function() {
     });
 
     $("div .images").each(function(i, element) {
-        $(element).mousedown(function(event) {
+        $(element).draggable({opacity: 0.7, helper: "clone"}).mousedown(function(event) {
             event.preventDefault();
             image_dragging = i + 1;
         });
@@ -201,9 +203,11 @@ $(function() {
         var height = $("#image" + num).height();
         var $img = $("#image" + num + " img");
 
+        var url = imageDir + path;
+
         var image = new Image();
         image.onload = function() {
-            $img.attr("src", path);
+            $img.attr("src", url);
             // original size of the image
             var origWidth = image.width;
             var origHeight = image.height;
@@ -224,6 +228,6 @@ $(function() {
                 .css("top", posY + "px")
                 .css("margin", "0px");
         };
-        image.src = path;
+        image.src = url;
     }
 });
