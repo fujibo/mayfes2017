@@ -9,6 +9,14 @@
 $ cd ./WebGUI/image/
 $ ln -s (MayFes_Testへのpath)/Belmondo Belmondo
 ```
+```bash
+$ cd (path_to_mayfes2017)
+$ cd ../ 
+$ ln -s (path_to_MayFes_test)/manga6_92000.caffemodel manga6_92000.caffemodel
+$ ln -s (path_to_MayFes_test)/manga6_feature.prototxt manga6_feature.prototxt
+$ ln -s (path_to_MayFes_test)/manga6_mean.npy manga6_mean.npy
+$ ln -s (path_to_MayFes_test)/removed_manga6_selective100 removed_manga6_selective100
+```
 
 ### 環境構築済みの場合
 ```bash
