@@ -43,7 +43,6 @@ $(function() {
     var ctx = canvas.getContext("2d");
 
     var canvas_dragging = false;
-    var in_canvas = false;
 
     var NUM_UNDO = 10;
     var undoImages = [];
@@ -54,6 +53,8 @@ $(function() {
     var borderWidth = 1;
     var canvasX = $("#canvas").offset().left + borderWidth;
     var canvasY = $("#canvas").offset().top + borderWidth;
+    var canvasWidth = $("#canvas").width();
+    var canvasHeight = $("#canvas").height();
 
     var prevX = null;
     var prevY = null;
@@ -65,32 +66,9 @@ $(function() {
     })
     .mouseup(function() {
         if(canvas_dragging) onDraw();
-        if(image_dragging != null) {
-            var image = new Image();
-            var $target_div = $("#image" + image_dragging);
-            var $target_img = $("#image" + image_dragging + " img");
-            image.src = $target_img.attr("src");
-
-            var div_width = $target_div.width();
-            var div_height = $target_div.height();
-            var img_width = $target_img.width();
-            var img_height = $target_img.height();
-            var ratio = image.width / img_width;
-            var left = parseFloat($target_img.css("left"));
-            var top = parseFloat($target_img.css("top"));
-            // clear before paste
-            ctx.fillStyle = "white";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.drawImage(image, -left * ratio, -top * ratio, div_width * ratio, div_height * ratio,
-                0, 0, $("#canvas").width(), $("#canvas").height());
-            image_dragging = null;
-            onDraw();
-        }
     })
     .mouseleave(function() {
         if(canvas_dragging) onDraw();
-        in_canvas = false;
     })
     .mousemove(function(event) {
         if(canvas_dragging) {
@@ -110,26 +88,44 @@ $(function() {
             prevX = x;
             prevY = y;
         }
-    })
-    .mouseover(function() {
-        in_canvas = true;
     });
 
-    setImage(1, "image/sample.jpg", 100, 0, 200, 400);
-    setImage(2, "image/sample.jpg", 0, 0, 640, 400);
-    setImage(3, "image/sample.jpg", 200, 0, 600, 400);
-
-    $("html").mouseleave(function() {
-        image_dragging = null;
-    })
-    .mouseup(function() {
-        if(!in_canvas) image_dragging = null;
-    });
+    setImage(1, "sample.jpg", 100, 0, 200, 400);
+    setImage(2, "sample.jpg", 0, 0, 640, 400);
+    setImage(3, "sample.jpg", 200, 0, 600, 400);
 
     $("div .images").each(function(i, element) {
-        $(element).draggable({opacity: 0.7, helper: "clone"}).mousedown(function(event) {
-            event.preventDefault();
-            image_dragging = i + 1;
+        $(element).draggable({
+            opacity: 0.7,
+            helper: "clone",
+            start: function(event, ui) {
+                image_dragging = i + 1;
+            },
+            stop: function(event, ui) {
+                var xs = event.pageX;
+                var ys = event.pageY;
+                if(canvasX <= xs && canvasY <= ys && canvasX + canvasWidth >= xs && canvasY + canvasHeight >= ys) {
+                    var image = new Image();
+                    var $target_div = $("#image" + image_dragging);
+                    var $target_img = $("#image" + image_dragging + " img");
+                    image.src = $target_img.attr("src");
+
+                    var div_width = $target_div.width();
+                    var div_height = $target_div.height();
+                    var img_width = $target_img.width();
+                    var img_height = $target_img.height();
+                    var ratio = image.width / img_width;
+                    var left = parseFloat($target_img.css("left"));
+                    var top = parseFloat($target_img.css("top"));
+                    // clear before paste
+                    ctx.fillStyle = "white";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.drawImage(image, -left * ratio, -top * ratio, div_width * ratio, div_height * ratio,
+                            0, 0, $("#canvas").width(), $("#canvas").height());
+                    onDraw();
+                }
+            }
         });
     });
 
