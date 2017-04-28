@@ -5,6 +5,16 @@ $(function() {
             if(e.keyCode == 90) undo();
         }
     });
+    var is_pen = true;
+    $(".tools").checkboxradio();
+    $("#radio_pen").click(function() {
+        is_pen = true;
+    });
+    $("#radio_erase").click(function() {
+        is_pen = false;
+    });
+    $("#radio_pen").click();
+    $("#tools_group").controlgroup();
     $("#lineWidth").text(lineWidth);
     var slider = $("#slider").slider({
         min: 1,
@@ -25,6 +35,7 @@ $(function() {
     $("#btn_clear").button().click(function() {
         clear();
     });
+    $("#edit_group").controlgroup();
 
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
@@ -39,7 +50,7 @@ $(function() {
     var image_dragging = null;
 
     var borderWidth = 1;
-    var canvasX = $("#canvas").offset().left + borderWidth; 
+    var canvasX = $("#canvas").offset().left + borderWidth;
     var canvasY = $("#canvas").offset().top + borderWidth;
 
     var prevX = null;
@@ -80,6 +91,7 @@ $(function() {
             var x = event.pageX - canvasX;
             var y = event.pageY - canvasY;
             ctx.beginPath();
+            ctx.strokeStyle = is_pen ? "black" : "white";
             ctx.lineWidth = lineWidth;
             ctx.lineCap = "round";
             if(prevX == null) {
@@ -96,7 +108,7 @@ $(function() {
     .mouseover(function() {
         in_canvas = true;
     });
-    
+
     setImage(1, "image/sample.jpg", 100, 100, 200, 200);
     setImage(2, "image/sample.jpg", 0, 0, 400, 400);
     setImage(3, "image/sample.jpg", 200, 0, 600, 400);
@@ -107,7 +119,7 @@ $(function() {
     .mouseup(function() {
         if(!in_canvas) image_dragging = null;
     });
-    
+
     $("div .images").each(function(i, element) {
         $(element).mousedown(function(event) {
             event.preventDefault();
@@ -127,14 +139,19 @@ $(function() {
             data: {
                 "image": pngData
             },
-            dataType: "json",
-            success: handleResponse
+            dataType: "json"
+        })
+        .done(function(res) {
+            var imgs = res.imgs;
+            $.each(imgs, function(i, img) {
+                setImage(i+1, img.path, img.x1, img.y1, img.x2, img.y2);
+            });
         });
-    }
-
-    function handleResponse(data, dataType) {
-        // TODO: show images
-        console.log(data);
+        $("div .images").map(function(idx, element) {
+          $(element).css({"position":"relative"})
+          $(element).children("img").attr({"src":"image/ajax-loader.gif"});
+          $(element).children("img").css({"position":"absolute", "top":0, "right":0, "bottom":0, "left":0, "margin":"auto", "width":60});
+        });
     }
 
     function clear() {
@@ -179,7 +196,7 @@ $(function() {
         var width = $("#image" + num).width();
         var height = $("#image" + num).height();
         var $img = $("#image" + num + " img");
-        
+
         var image = new Image();
         image.onload = function() {
             $img.attr("src", path);
