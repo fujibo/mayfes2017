@@ -26,12 +26,11 @@ canvas {
 }
 
 .images {
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 200px;
     overflow: hidden;
     border: 1px solid;
-    margin: 10px;
-    display: inline-block;
+    margin: 5px;
 }
 
 .images img {

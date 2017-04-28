@@ -20,7 +20,7 @@ $(function() {
     $("#lineWidth").text(lineWidth);
     var slider = $("#slider").slider({
         min: 1,
-        max: 10,
+        max: 30,
         range: "min",
         value: lineWidth,
         slide: function(event, ui) {
@@ -44,7 +44,7 @@ $(function() {
 
     var canvas_dragging = false;
 
-    var NUM_UNDO = 10;
+    var NUM_UNDO = 20;
     var undoImages = [];
     var redoImages = [];
 
