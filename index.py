@@ -3,7 +3,10 @@ from datetime import datetime
 import os
 import json
 import base64
+
+from sample import retrival
 TEMPLATE_PATH.append("./WebGUI")
+print("init")
 @route('/')
 def index():
     return template("index")
@@ -37,16 +40,23 @@ def search():
 
     upload = request.forms.get('image')
     #name, ext = os.path.splitext(upload.image)
-    print(upload)
+    #print(upload)
     #upload.save("/tmp", overwrite=Ture
     decfile = base64.b64decode(upload)
     fout = open('temp.png', 'wb')
     fout.write(decfile)
-    fout.close
+    fout.close()
 
+    retrival.query1("./0_Belmondo_061.jpg")
+    body = retrival.calc()
+    print(body)
+    
+    '''
     body = {"imgs":[{"path":"/image/sample.jpg", "title":"string", "page": 0, "x1":0, "x2":400, "y1":0, "y2":400},
     {"path":"/image/sample.jpg", "title":"string", "page": 0, "x1":0, "x2":400, "y1":0, "y2":400},
     {"path":"/image/sample.jpg", "title":"string", "page": 0, "x1":0, "x2":400, "y1":0, "y2":400}]} 
+    '''
+   
     r = HTTPResponse(status=200, body=json.dumps(body))
     return r
 
@@ -54,5 +64,6 @@ def search():
 
 
 if __name__ == '__main__':
+    retrival.init()
     port = int(os.environ.get('PORT', 8080))
     run(port = port)

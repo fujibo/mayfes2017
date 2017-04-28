@@ -16,10 +16,10 @@ import cupy
 from PIL import Image
 import cv2
 
-MEAN_FILE = "manga6_mean.npy"
-MODEL_FILE = "manga6_feature.prototxt"
-PRETRAINED = "manga6_92000.caffemodel"
-FEATURE = "removed_manga6_selective100"
+MEAN_FILE = "../manga6_mean.npy"
+MODEL_FILE = "../manga6_feature.prototxt"
+PRETRAINED = "../manga6_92000.caffemodel"
+FEATURE = "../removed_manga6_selective100"
 LAYER = "fc6"
 
 in_size = 227 # image_dims
@@ -111,7 +111,7 @@ def calc():
         y2 = window[3]
         result_data = {"path": OLD_PATH, "title":title, "page":str(page).zfill(3), "x1":x1, "y1":y1, "x2":x2, "y2":y2}
         results_list.append(result_data)
-    print(results_list)
+    return results_list
 
 # calc()
     #img = cv2.imread(OLD_PATH)
