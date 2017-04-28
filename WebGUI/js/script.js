@@ -154,11 +154,6 @@ $(function() {
         });
     }
 
-    function handleResponse(data, dataType) {
-        // TODO: show images
-        console.log(data);
-    }
-
     function clear() {
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -202,14 +197,13 @@ $(function() {
         var height = $("#image" + num).height();
         var $img = $("#image" + num + " img");
 
-
         var image = new Image();
         image.onload = function() {
             $img.attr("src", path);
             // original size of the image
-            var origWidth = $img.width();
-            var origHeight = $img.height();
-          var ratio = width / (right - left);
+            var origWidth = image.width;
+            var origHeight = image.height;
+            var ratio = width / (right - left);
             $img.width(origWidth * ratio)
                 .css("left", "-" + (left * ratio) + "px")
                 .css("top", "-" + (top * ratio) + "px");
