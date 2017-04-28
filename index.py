@@ -4,7 +4,7 @@ import os
 import json
 import base64
 
-from sample import retrival
+import retrival
 TEMPLATE_PATH.append("./WebGUI")
 print("init")
 @route('/')
@@ -18,7 +18,7 @@ def js_static(filename):
 @route('/css/<filename>')
 def js_static(filename):
     return static_file(filename, root='./WebGUI/css')
-@route('/image/<filename>')
+@route('/image/<filename:path>')
 def js_static(filename):
     return static_file(filename, root='./WebGUI/image')
 
@@ -47,8 +47,9 @@ def search():
     fout.write(decfile)
     fout.close()
 
-    retrival.query1("./0_Belmondo_061.jpg")
-    body = retrival.calc()
+    retrival.query1("./temp.png")
+    data_dic = retrival.calc()
+    body = {"imgs": data_dic}
     print(body)
     
     '''

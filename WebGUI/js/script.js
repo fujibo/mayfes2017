@@ -1,5 +1,5 @@
 $(function() {
-    var imageDir = "";
+    var imageDir = "image/";
 
     var lineWidth = 2;
     $(window).keydown(function(e) {
