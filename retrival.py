@@ -83,7 +83,7 @@ def init():
             for window in windows:
                 title = key.split("_p")[0]
                 page = key.split("_p")[1]
-                OLD_PATH = '/image/' + title + '/' + title + "_" + str(page).zfill(3) + ".jpg"
+                OLD_PATH = title + '/' + title + "_" + str(page).zfill(3) + ".jpg"
 
                 feature_value.append(window[4:])
                 data.append([title, page, OLD_PATH, window[:4]])
