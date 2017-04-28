@@ -3,6 +3,8 @@ from datetime import datetime
 import os
 import json
 import base64
+import retrival
+
 TEMPLATE_PATH.append("./WebGUI")
 @route('/')
 def index():
@@ -15,8 +17,9 @@ def js_static(filename):
 @route('/css/<filename>')
 def js_static(filename):
     return static_file(filename, root='./WebGUI/css')
-@route('/image/<filename>')
+@route('/image/<filename:path>')
 def js_static(filename):
+    print(filename)
     return static_file(filename, root='./WebGUI/image')
 
 @route('/ping', method='GET')
@@ -42,17 +45,18 @@ def search():
     decfile = base64.b64decode(upload)
     fout = open('temp.png', 'wb')
     fout.write(decfile)
-    fout.close
+    fout.close()
+    retrival.query1('./temp.png')
 
-    body = {"imgs":[{"path":"/image/sample.jpg", "title":"string", "page": 0, "x1":0, "x2":400, "y1":0, "y2":400},
-    {"path":"/image/sample.jpg", "title":"string", "page": 0, "x1":0, "x2":400, "y1":0, "y2":400},
-    {"path":"/image/sample.jpg", "title":"string", "page": 0, "x1":0, "x2":400, "y1":0, "y2":400}]} 
+    print(retrival)
+    res = retrival.calc()
+    body = {"imgs": res}
+    print(body)
     r = HTTPResponse(status=200, body=json.dumps(body))
     return r
 
 
-
-
 if __name__ == '__main__':
+    retrival.init()
     port = int(os.environ.get('PORT', 8080))
     run(port = port)
