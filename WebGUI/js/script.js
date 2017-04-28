@@ -55,7 +55,6 @@ $(function() {
     var canvasY = $("#canvas").offset().top + borderWidth;
     var canvasWidth = $("#canvas").width();
     var canvasHeight = $("#canvas").height();
-    console.log(canvasWidth);
 
     var prevX = null;
     var prevY = null;
@@ -91,9 +90,9 @@ $(function() {
         }
     });
 
-    setImage(1, "image/sample.jpg", 100, 0, 200, 400);
-    setImage(2, "image/sample.jpg", 0, 0, 640, 400);
-    setImage(3, "image/sample.jpg", 200, 0, 600, 400);
+    setImage(1, "sample.jpg", 100, 0, 200, 400);
+    setImage(2, "sample.jpg", 0, 0, 640, 400);
+    setImage(3, "sample.jpg", 200, 0, 600, 400);
 
     $("div .images").each(function(i, element) {
         $(element).draggable({
