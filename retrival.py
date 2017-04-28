@@ -1,6 +1,7 @@
 # meanfile prototxt model feature query_path query_name
 
-import sys, os
+import sys
+import os
 import scipy as sp
 import numpy as np
 import scipy.spatial.distance as dis
@@ -22,7 +23,7 @@ PRETRAINED = "../manga6_92000.caffemodel"
 FEATURE = "../removed_manga6_selective100"
 LAYER = "fc6"
 
-in_size = 227 # image_dims
+in_size = 227  # image_dims
 
 mean_image = np.load(MEAN_FILE)
 
@@ -37,22 +38,14 @@ if GPU:
     model.to_gpu(gpu_device)
 
 FEATURE_PATH = FEATURE + "/"
-RESULT_PATH = "result_chainer/" + FEATURE + "/"
-if not os.path.isdir(RESULT_PATH):
-    os.makedirs(RESULT_PATH)
 titles = ["Belmondo"]
 #titles = ["MeteoSanStrikeDesu","SaladDays_vol18","HinagikuKenzan","HarukaRefrain"]
 #titles = ["Belmondo", "LoveHina_vol14", "GOOD_KISS_Ver2", "YamatoNoHane", "Arisa", "BakuretsuKungFuGirl", "AisazuNihaIrarenai"]
 number = len(titles)
 
 
-
 def query1(query_path):
     QUERY_PATH = query_path
-    global QUERY_NAME
-    QUERY_NAME = "temp"
-    if not os.path.isdir(RESULT_PATH + QUERY_NAME):
-        os.mkdir(RESULT_PATH + QUERY_NAME)
 
     image = cv2.imread(QUERY_PATH)
     image = cv2.resize(image, (in_size, in_size))
@@ -68,7 +61,8 @@ def query1(query_path):
         image = chainer.Variable(np.array([image]), volatile=True)
 
     global query
-    query = model(inputs={'data': image}, outputs=['fc6'], disable=['relu6', 'drop6'], train=False)[0]
+    query = model(inputs={'data': image}, outputs=['fc6'], disable=[
+                  'relu6', 'drop6'], train=False)[0]
 
     # query: 1 x 4096
     query = query.data.flatten()
@@ -78,6 +72,8 @@ def query1(query_path):
 
 data = []
 feature_value = []
+
+
 def init():
     global feature_value
     global data
@@ -87,20 +83,21 @@ def init():
             for window in windows:
                 title = key.split("_p")[0]
                 page = key.split("_p")[1]
-                OLD_PATH = title + "/" + title + "_" + str(page).zfill(3) + ".jpg"
+                OLD_PATH = '/image/' + title + '/' + title + "_" + str(page).zfill(3) + ".jpg"
 
                 feature_value.append(window[4:])
-                data.append([title,page,OLD_PATH,window[:4]])
+                data.append([title, page, OLD_PATH, window[:4]])
 
     feature_value = np.array(feature_value)
     feature_value = feature_value / np.linalg.norm(feature_value, axis=1).reshape(-1, 1)
 # init()
 
+
 def calc():
     results_list = []
     distance = - feature_value.dot(query)
     distance_index = np.argsort(distance)
-    for j, v in enumerate(distance_index[:6]):
+    for j, v in enumerate(distance_index[:3]):
         title = data[v][0]
         page = data[v][1]
         OLD_PATH = data[v][2]
@@ -109,7 +106,8 @@ def calc():
         y1 = window[1]
         x2 = window[2]
         y2 = window[3]
-        result_data = {"path": OLD_PATH, "title":title, "page":str(page).zfill(3), "x1":x1, "y1":y1, "x2":x2, "y2":y2}
+        result_data = {"path": OLD_PATH, "title": title, "page": str(
+            page).zfill(3), "x1": x1, "y1": y1, "x2": x2, "y2": y2}
         results_list.append(result_data)
     return results_list
 

@@ -5,6 +5,11 @@
 ## 実行方法
 **本番環境ではOpenCVを使用しているのでビルドするか，wikiを参照して入れる必要あり**
 
+```bash
+$ cd ./WebGUI/image/
+$ ln -s (MayFes_Testへのpath)/Belmondo Belmondo
+```
+
 ### 環境構築済みの場合
 ```bash
 $ python index.py

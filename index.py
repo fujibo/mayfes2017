@@ -3,7 +3,6 @@ from datetime import datetime
 import os
 import json
 import base64
-
 import retrival
 TEMPLATE_PATH.append("./WebGUI")
 print("init")
@@ -20,6 +19,7 @@ def js_static(filename):
     return static_file(filename, root='./WebGUI/css')
 @route('/image/<filename:path>')
 def js_static(filename):
+    print(filename)
     return static_file(filename, root='./WebGUI/image')
 
 @route('/ping', method='GET')
@@ -46,22 +46,14 @@ def search():
     fout = open('temp.png', 'wb')
     fout.write(decfile)
     fout.close()
+    retrival.query1('./temp.png')
 
-    retrival.query1("./temp.png")
-    data_dic = retrival.calc()
-    body = {"imgs": data_dic}
+    print(retrival)
+    res = retrival.calc()
+    body = {"imgs": res}
     print(body)
-    
-    '''
-    body = {"imgs":[{"path":"/image/sample.jpg", "title":"string", "page": 0, "x1":0, "x2":400, "y1":0, "y2":400},
-    {"path":"/image/sample.jpg", "title":"string", "page": 0, "x1":0, "x2":400, "y1":0, "y2":400},
-    {"path":"/image/sample.jpg", "title":"string", "page": 0, "x1":0, "x2":400, "y1":0, "y2":400}]} 
-    '''
-   
     r = HTTPResponse(status=200, body=json.dumps(body))
     return r
-
-
 
 
 if __name__ == '__main__':
