@@ -45,6 +45,8 @@ titles = ["Belmondo"]
 #titles = ["Belmondo", "LoveHina_vol14", "GOOD_KISS_Ver2", "YamatoNoHane", "Arisa", "BakuretsuKungFuGirl", "AisazuNihaIrarenai"]
 number = len(titles)
 
+
+
 def query1(query_path):
     QUERY_PATH = query_path
     global QUERY_NAME
@@ -72,36 +74,45 @@ def query1(query_path):
     query = query.data.flatten()
     query = chainer.cuda.to_cpu(query)
 
-distance = []
+# query1("./0_Belmondo_061.jpg")
+
 data = []
 feature_value = []
-for title in titles:
-    propasals = np.load(FEATURE_PATH + title + ".npz")
-    for key, windows in propasals.iteritems():
-        for window in windows:
-            title = key.split("_p")[0]
-            page = key.split("_p")[1]
-            OLD_PATH = title + "/" + title + "_" + str(page).zfill(3) + ".jpg"
-            feature_value.append(window[4:])
-            data.append([OLD_PATH,window[:4]])
+def init():
+    global feature_value
+    global data
+    for title in titles:
+        propasals = np.load(FEATURE_PATH + title + ".npz")
+        for key, windows in propasals.iteritems():
+            for window in windows:
+                title = key.split("_p")[0]
+                page = key.split("_p")[1]
+                OLD_PATH = title + "/" + title + "_" + str(page).zfill(3) + ".jpg"
 
-feature_value = np.array(feature_value)
-#feature_valueが特徴量をいれた配列、dataが
-#ここでdistance計算？
-# distance_index = np.argsort(distance)
-# for j, v in enumerate(distance_index[:100]):
+                feature_value.append(window[4:])
+                data.append([title,page,OLD_PATH,window[:4]])
 
-    # window = data[v][1]
-    # x1 = window[0]
-    # y1 = window[1]
-    # x2 = window[2]
-    # y2 = window[3]
-    # NEW_PATH = RESULT_PATH + QUERY_NAME + "/" + str(j) + "_" + title + "_" + str(page).zfill(3) + ".jpg"
+    feature_value = np.array(feature_value)
+    feature_value = feature_value / np.linalg.norm(feature_value, axis=1).reshape(-1, 1)
+# init()
 
-
-
-    result_data = {"path": OLD_PATH, "title":title, "page":str(page).zfill(3), "x1":x1, "y1":y1, "x2":x2, "y2":y2}
-    results_list.append(result_data)
+def calc():
+    results_list = []
+    distance = - feature_value.dot(query)
+    distance_index = np.argsort(distance)
+    for j, v in enumerate(distance_index[:6]):
+        title = data[v][0]
+        page = data[v][1]
+        OLD_PATH = data[v][2]
+        window = data[v][3]
+        x1 = window[0]
+        y1 = window[1]
+        x2 = window[2]
+        y2 = window[3]
+        result_data = {"path": OLD_PATH, "title":title, "page":str(page).zfill(3), "x1":x1, "y1":y1, "x2":x2, "y2":y2}
+        results_list.append(result_data)
     print(results_list)
+
+# calc()
     #img = cv2.imread(OLD_PATH)
     #cv2.imwrite(NEW_PATH, img[y1:y2, x1:x2])
