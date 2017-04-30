@@ -16,10 +16,11 @@ from chainer.functions import caffe
 import cupy
 from PIL import Image
 import cv2
+import pickle
 
 MEAN_FILE = "../manga6_mean.npy"
 MODEL_FILE = "../manga6_feature.prototxt"
-PRETRAINED = "../manga6_92000.caffemodel"
+PRETRAINED = "../model.pkl"
 FEATURE = "../removed_manga6_selective100"
 LAYER = "fc6"
 
@@ -33,14 +34,14 @@ if GPU:
     cuda.get_device(gpu_device).use()
     xp = cuda.cupy
 
-model = caffe.CaffeFunction(PRETRAINED)
+model = pickle.load(PRETRAINED, 'rb')
 if GPU:
     model.to_gpu(gpu_device)
 
 FEATURE_PATH = FEATURE + "/"
-titles = ["Belmondo"]
-#titles = ["MeteoSanStrikeDesu","SaladDays_vol18","HinagikuKenzan","HarukaRefrain"]
-#titles = ["Belmondo", "LoveHina_vol14", "GOOD_KISS_Ver2", "YamatoNoHane", "Arisa", "BakuretsuKungFuGirl", "AisazuNihaIrarenai"]
+titles = ['Belmondo', 'LoveHina_vol14']
+# titles = ["AisazuNihaIrarenai", "Arisa", "Belmondo", "GOOD_KISS_Ver2",  "HarukaRefrain", "HinagikuKenzan", "LoveHina_vol14", "MeteoSanStrikeDesu", "SaladDays_vol18", "YamatoNoHane"]
+# "BakuretsuKungFuGirl"
 number = len(titles)
 
 
