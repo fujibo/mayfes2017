@@ -1,9 +1,10 @@
-from bottle import route, run, template, request, static_file, HTTPResponse, TEMPLATE_PATH
+from bottle import route, run, template, request, static_file, HTTPResponse, TEMPLATE_PATH, BaseRequest
 from datetime import datetime
 import os
 import json
 import base64
 import retrival
+
 TEMPLATE_PATH.append("./WebGUI")
 print("init")
 @route('/')
@@ -48,15 +49,17 @@ def search():
     fout.close()
     retrival.query1('./temp.png')
 
-    print(retrival)
     res = retrival.calc()
     body = {"imgs": res}
-    print(body)
+    # print(body)
     r = HTTPResponse(status=200, body=json.dumps(body))
     return r
 
 
 if __name__ == '__main__':
+    # 元々1MBが上限
+    BaseRequest.MEMFILE_MAX *= 4
+
     retrival.init()
     port = int(os.environ.get('PORT', 8080))
     run(port = port)
