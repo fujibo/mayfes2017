@@ -28,19 +28,19 @@ in_size = 227  # image_dims
 
 mean_image = np.load(MEAN_FILE)
 
-GPU = False
+GPU = True
 if GPU:
     gpu_device = 0
     cuda.get_device(gpu_device).use()
     xp = cuda.cupy
 
-model = pickle.load(PRETRAINED, 'rb')
+model = pickle.load(open(PRETRAINED, 'rb'))
 if GPU:
     model.to_gpu(gpu_device)
 
 FEATURE_PATH = FEATURE + "/"
-titles = ['Belmondo', 'LoveHina_vol14']
-# titles = ["AisazuNihaIrarenai", "Arisa", "Belmondo", "GOOD_KISS_Ver2",  "HarukaRefrain", "HinagikuKenzan", "LoveHina_vol14", "MeteoSanStrikeDesu", "SaladDays_vol18", "YamatoNoHane"]
+# titles = ['Belmondo', 'LoveHina_vol14']
+titles = ["AisazuNihaIrarenai", "Arisa", "Belmondo", "GOOD_KISS_Ver2",  "HarukaRefrain", "HinagikuKenzan", "LoveHina_vol14", "MeteoSanStrikeDesu", "SaladDays_vol18", "YamatoNoHane"]
 # "BakuretsuKungFuGirl"
 number = len(titles)
 
@@ -98,7 +98,7 @@ def calc():
     results_list = []
     distance = - feature_value.dot(query)
     distance_index = np.argsort(distance)
-    for j, v in enumerate(distance_index[:3]):
+    for j, v in enumerate(distance_index[:12]):
         title = data[v][0]
         page = data[v][1]
         OLD_PATH = data[v][2]
