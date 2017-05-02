@@ -78,7 +78,11 @@ feature_value = []
 def init():
     global feature_value
     global data
+    num = len(titles)
+    count = -1
     for title in titles:
+        count += 1
+        print('{} / {} loading {}'.format(count, num, title))
         propasals = np.load(FEATURE_PATH + title + ".npz")
         for key, windows in propasals.iteritems():
             for window in windows:

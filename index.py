@@ -6,7 +6,7 @@ import base64
 import retrival
 
 TEMPLATE_PATH.append("./WebGUI")
-print("init")
+print("init: loaded model and libraries")
 @route('/')
 def index():
     return template("index")
