@@ -65,10 +65,10 @@ $(function() {
         canvas_dragging = true;
     })
     .mouseup(function() {
-        if(canvas_dragging) onDraw();
+        if(canvas_dragging) onDraw(0);
     })
     .mouseleave(function() {
-        if(canvas_dragging) onDraw();
+        if(canvas_dragging) onDraw(0);
     })
     .mousemove(function(event) {
         if(canvas_dragging) {
@@ -123,13 +123,13 @@ $(function() {
 
                     ctx.drawImage(image, -left * ratio, -top * ratio, div_width * ratio, div_height * ratio,
                             0, 0, $("#canvas").width(), $("#canvas").height());
-                    onDraw();
+                    onDraw(1);
                 }
             }
         });
     });
 
-    function finishDrawing() {
+    function finishDrawing(is_new) {
         canvas_dragging = false;
         prevX = null;
         prevY = null;
@@ -139,7 +139,8 @@ $(function() {
             type: "POST",
             cache: false,
             data: {
-                "image": pngData
+                "image": pngData,
+                "new": is_new
             },
             dataType: "json"
         })
@@ -159,13 +160,13 @@ $(function() {
     function clear() {
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        onDraw();
+        onDraw(1);
     }
 
-    function onDraw() {
+    function onDraw(is_new) {
         if(redoImages.length > 0) redoImages = [];
         saveForUndo();
-        finishDrawing();
+        finishDrawing(is_new);
     }
 
     function saveForUndo() {
