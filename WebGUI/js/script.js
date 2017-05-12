@@ -39,6 +39,15 @@ $(function() {
     });
     $("#edit_group").controlgroup();
 
+    var borderWidth = 1;
+    var canvasX = $("#canvas").offset().left + borderWidth;
+    var canvasY = $("#canvas").offset().top + borderWidth;
+
+    $(window).resize(function() {
+        canvasX = $("#canvas").offset().left + borderWidth;
+        canvasY = $("#canvas").offset().top + borderWidth;
+    });
+
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
 
@@ -50,9 +59,6 @@ $(function() {
 
     var image_dragging = null;
 
-    var borderWidth = 1;
-    var canvasX = $("#canvas").offset().left + borderWidth;
-    var canvasY = $("#canvas").offset().top + borderWidth;
     var canvasWidth = $("#canvas").width();
     var canvasHeight = $("#canvas").height();
 
