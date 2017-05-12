@@ -11,8 +11,6 @@
     <div id="wrapper">
         <div id="left">
             <canvas id="canvas" width="300" height="300"></canvas>
-            <p style="text-align: left"><span>線の太さ: </span><span id="lineWidth">1</span></p>
-            <div id="slider"></div>
             <div id="tools_group">
                 <label for="radio_pen">ペン</label>
                 <input type="radio" class="tools" name="tools" id="radio_pen">
@@ -24,6 +22,10 @@
                 <button id="btn_redo" class="ui-button ui-widget ui-corner-all">やり直し</button>
                 <button id="btn_clear" class="ui-button ui-widget ui-corner-all">クリア</button>
             </div>
+            <p style="text-align: left"><span>ペンの太さ: </span><span id="lineWidth">1</span></p>
+            <div id="slider"></div>
+            <p style="text-align: left"><span>消しゴムの太さ: </span><span id="eraseWidth">1</span></p>
+            <div id="eraseSlider"></div>
         </div>
         <div id="right">
             <table>
