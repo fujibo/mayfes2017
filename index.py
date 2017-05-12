@@ -5,6 +5,8 @@ import json
 import base64
 import retrival
 
+img_id = 0
+global dirname
 TEMPLATE_PATH.append("./WebGUI")
 print("init: loaded model and libraries")
 @route('/')
@@ -38,16 +40,26 @@ def post():
 
 @route('/searching', method='POST')
 def search():
-
+    reset = request.forms.get('new')
+    print(reset)
     upload = request.forms.get('image')
-    #name, ext = os.path.splitext(upload.image)
-    #print(upload)
-    #upload.save("/tmp", overwrite=Ture
+    global dirname
+    global img_id
+
     decfile = base64.b64decode(upload)
-    fout = open('temp.png', 'wb')
+    if reset == '1':
+        img_id = 0
+        dirname = datetime.now().strftime('%Y_%m_%d_%H%M%S')
+        if not os.path.isdir("./images/"+dirname):
+            os.mkdir("./images/" + dirname)
+    else:
+        img_id += 1
+    filename = 'image_' + str(img_id) + '.png'
+    filepath = './images/' + dirname + '/' + filename
+    fout = open(filepath, 'wb')
     fout.write(decfile)
     fout.close()
-    retrival.query1('./temp.png')
+    retrival.query1(filepath)
 
     res = retrival.calc()
     body = {"imgs": res}
@@ -58,8 +70,16 @@ def search():
 
 if __name__ == '__main__':
     # 元々1MBが上限
+    global dirname
     BaseRequest.MEMFILE_MAX *= 4
 
     retrival.init()
+    if not os.path.isdir("./images"):
+        os.mkdir("./images")
+    dirname = datetime.now().strftime('%Y_%m_%d_%H%M%S')
+    if not os.path.isdir("./images/"+dirname):
+        os.mkdir("./images/" + dirname)
+    img_id = 0
+
     port = int(os.environ.get('PORT', 8080))
     run(port = port)
