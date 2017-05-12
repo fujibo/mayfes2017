@@ -2,6 +2,7 @@ $(function() {
     var imageDir = "image/";
 
     var lineWidth = 2;
+    var eraseWidth = 10;
     $(window).keydown(function(e) {
         if(e.ctrlKey) {
             if(e.keyCode == 90) undo();
@@ -18,7 +19,8 @@ $(function() {
     $("#radio_pen").click();
     $("#tools_group").controlgroup();
     $("#lineWidth").text(lineWidth);
-    var slider = $("#slider").slider({
+    $("#eraseWidth").text(eraseWidth);
+    $("#slider").slider({
         min: 1,
         max: 30,
         range: "min",
@@ -28,16 +30,41 @@ $(function() {
             $("#lineWidth").text(lineWidth);
         }
     });
-    $("#btn_undo").button().click(function() {
+    $("#eraseSlider").slider({
+        min: 1,
+        max: 50,
+        range: "min",
+        value: eraseWidth,
+        slide: function(event, ui) {
+            eraseWidth = ui.value;
+            $("#eraseWidth").text(eraseWidth);
+        }
+    });
+    $("#btn_undo").button({
+        icon: "ui-icon-arrowreturnthick-1-w"
+    }).click(function() {
         undo();
     });
-    $("#btn_redo").button().click(function() {
+    $("#btn_redo").button({
+        icon: "ui-icon-arrowreturnthick-1-e"
+    }).click(function() {
         redo();
     });
-    $("#btn_clear").button().click(function() {
+    $("#btn_clear").button({
+        icon: "ui-icon-close"
+    }).click(function() {
         clear();
     });
     $("#edit_group").controlgroup();
+
+    var borderWidth = 1;
+    var canvasX = $("#canvas").offset().left + borderWidth;
+    var canvasY = $("#canvas").offset().top + borderWidth;
+
+    $(window).resize(function() {
+        canvasX = $("#canvas").offset().left + borderWidth;
+        canvasY = $("#canvas").offset().top + borderWidth;
+    });
 
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
@@ -50,9 +77,6 @@ $(function() {
 
     var image_dragging = null;
 
-    var borderWidth = 1;
-    var canvasX = $("#canvas").offset().left + borderWidth;
-    var canvasY = $("#canvas").offset().top + borderWidth;
     var canvasWidth = $("#canvas").width();
     var canvasHeight = $("#canvas").height();
 
@@ -76,7 +100,7 @@ $(function() {
             var y = event.pageY - canvasY;
             ctx.beginPath();
             ctx.strokeStyle = is_pen ? "black" : "white";
-            ctx.lineWidth = lineWidth;
+            ctx.lineWidth = is_pen ? lineWidth : eraseWidth;
             ctx.lineCap = "round";
             if(prevX == null) {
                 ctx.moveTo(x, y);
