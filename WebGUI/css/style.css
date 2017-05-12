@@ -7,10 +7,14 @@
 }
 
 #tools_group {
-    margin: 5px;
+    margin: 10px;
 }
 
 #edit_group {
+    margin: 5px;
+}
+
+#slider_group {
     margin: 5px;
 }
 
@@ -19,6 +23,12 @@
     width: 30%;
     text-align: center;
     margin: 10px;
+    position: absolute;
+    bottom: 0;
+}
+
+#right {
+    float: right;
 }
 
 canvas {
