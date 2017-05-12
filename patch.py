@@ -19,10 +19,11 @@ print('making pickle')
 pickle.dump(model, open('../model.pkl', 'wb'))
 
 print('symbolic link')
-titles = ["MeteoSanStrikeDesu","SaladDays_vol18","HinagikuKenzan","HarukaRefrain", "Belmondo", "LoveHina_vol14", "GOOD_KISS_Ver2", "YamatoNoHane", "Arisa", "AisazuNihaIrarenai"]
+# titles = ["MeteoSanStrikeDesu","SaladDays_vol18","HinagikuKenzan","HarukaRefrain", "Belmondo", "LoveHina_vol14", "GOOD_KISS_Ver2", "YamatoNoHane", "Arisa", "AisazuNihaIrarenai"]
+titles = ['Belmondo']
 os.chdir('./WebGUI/image')
 # トーン除去前のデータ
-os.remove('Belmondo')
+# os.remove('Belmondo')
 
 for title in titles:
     os.symlink('../../../' + title, './' + title)
