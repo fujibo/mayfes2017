@@ -116,7 +116,7 @@ $(function() {
 
     setImage(1, "sample.jpg", 100, 0, 200, 400);
     setImage(2, "sample.jpg", 0, 0, 640, 400);
-    setImage(3, "sample.jpg", 200, 0, 600, 400);
+    setImage(3, "sample.jpg", 500, 100, 640, 400);
 
     $("div .images").each(function(i, element) {
         $(element).draggable({
@@ -150,6 +150,54 @@ $(function() {
                     onDraw(1);
                 }
             }
+        })
+        .click(function(event) {
+          if($("#manga_page_img").length === 0) {
+            $(".manga_page").append("<img src=\"" + $(this).find('img').attr("src") + "\" id=\"manga_page_img\"/>");
+            $(".manga_page").append("");
+            $(".manga_page").append("<div class=\"square\"style=\"position:absolute;\"/>");
+            $(".manga_page").append("<button id=\"btn-close\" class=\"ui-widget ui-button\" style=\"position: absolute; right: 0px; top: 0px\"></button>");
+            $("#center").width("30%");
+            $("#right").css("display", "inline-block");
+            $("#btn-close").button({
+              icon: "ui-icon-close"
+            }).click(function(event) {
+              $("#manga_page_img").remove();
+              $("#btn-close").remove();
+              $("#right").css("display", "none");
+              $(".square").remove();
+              $("#center").width("65%");
+              $("#title").text("");
+              $("#page").text("");
+            });
+          } else {
+            $("#manga_page_img").attr({"src":$(this).find('img').attr("src")});
+          }
+
+          var origWidth = $(this).find('img').width();
+          var baseWidth = $(".manga_page").width();
+          var ratio = baseWidth * 2 / origWidth;
+
+          var windowWidth = $(this).width();
+            
+          $(".square").css("width", ratio * windowWidth+"px");
+          $(".square").css("height", ratio * windowWidth+"px");
+          $(".square").css("top", - ratio * $(this).find('img').position().top);
+
+          $("#title").text($(this).find('img').attr("data-title"));
+          $("#page").text($(this).find('img').attr("data-page"));
+
+          if(Math.abs($(this).find('img').position().left) > ($(this).find('img').width() / 2)) {
+            $("#manga_page_img").width(origWidth * ratio)
+              .css("margin", "0px")
+              .css("left", (-baseWidth) + "px");
+            $(".square").css("left", - ratio * $(this).find('img').position().left - baseWidth);
+          } else {
+            $("#manga_page_img").width(origWidth * ratio)
+              .css("margin", "0px")
+              .css("left", "0px");
+            $(".square").css("left", - ratio * $(this).find('img').position().left);
+            }
         });
     });
 
@@ -171,7 +219,7 @@ $(function() {
         .done(function(res) {
             var imgs = res.imgs;
             $.each(imgs, function(i, img) {
-                setImage(i+1, img.path, img.x1, img.y1, img.x2, img.y2);
+                setImage(i+1, img.path, img.x1, img.y1, img.x2, img.y2, img.title, img.page);
             });
         });
         $("div .images").map(function(idx, element) {
@@ -218,7 +266,7 @@ $(function() {
         }
     }
 
-    function setImage(num, path, left, top, right, bottom) {
+    function setImage(num, path, left, top, right, bottom, title, page) {
         // size in html
         var width = $("#image" + num).width();
         var height = $("#image" + num).height();
@@ -248,6 +296,8 @@ $(function() {
                 .css("left", posX + "px")
                 .css("top", posY + "px")
                 .css("margin", "0px");
+            $img.attr("data-title",title);
+            $img.attr("data-page", page);
         };
         image.src = url;
     }

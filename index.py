@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 from bottle import route, run, template, request, static_file, HTTPResponse, TEMPLATE_PATH, BaseRequest
 from datetime import datetime
 import os
