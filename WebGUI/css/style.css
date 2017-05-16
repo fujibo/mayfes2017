@@ -1,5 +1,7 @@
 #wrapper {
     overflow: hidden;
+    display: flex;
+    flex-direction: row;
 }
 
 #slider {
@@ -19,16 +21,34 @@
 }
 
 #left {
-    float: left;
+    display: flex;
+    flex-direction: column;
     width: 30%;
     text-align: center;
     margin: 10px;
-    position: absolute;
-    bottom: 0;
 }
 
 #right {
     float: right;
+}
+
+#center {
+    display: flex;
+    flex-wrap: wrap;
+    width: 65%;
+    overflow: hidden;
+}
+
+#right {
+    position: relative;
+    display: none;
+    float: right;
+    text-align: center;
+    margin: 10px;
+    border: 1px solid;
+    width: 35vw;
+    height: 70vw;
+    overflow: hidden;
 }
 
 canvas {
@@ -46,4 +66,26 @@ canvas {
 
 .images img {
     position: relative;
+}
+
+
+img#manga_page_img {
+  position: absolute;
+  display: block;
+  float: right;
+  top: 0px;
+  right: 0px;
+}
+
+#btn-close{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    text-align:center;
+}
+
+.square {
+  position: absolute;
+  border: 5px solid;
+  border-color: #ff0000;
 }

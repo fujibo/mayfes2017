@@ -6,6 +6,8 @@ temp.png
 __pycache__
 images
 
+*.pyc
+
 WebGUI/image/MeteoSanStrikeDesu
 WebGUI/image/SaladDays_vol18
 WebGUI/image/HinagikuKenzan
