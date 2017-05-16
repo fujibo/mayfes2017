@@ -40,7 +40,7 @@ if GPU:
 
 FEATURE_PATH = FEATURE + "/"
 # titles = ['Belmondo', 'LoveHina_vol14']
-titles = ["AisazuNihaIrarenai", "Arisa", "Belmondo", "GOOD_KISS_Ver2",  "HarukaRefrain", "HinagikuKenzan", "LoveHina_vol14", "MeteoSanStrikeDesu", "SaladDays_vol18", "YamatoNoHane"]
+titles = ["AisazuNihaIrarenai", "Arisa", "Belmondo", "GOOD_KISS_Ver2",  "HarukaRefrain", "HinagikuKenzan", "LoveHina_vol14", "SaladDays_vol18", "YamatoNoHane"]
 # "BakuretsuKungFuGirl"
 number = len(titles)
 
