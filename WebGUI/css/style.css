@@ -23,7 +23,7 @@
 #left {
     display: flex;
     flex-direction: column;
-    width: 30%;
+    width: 520px;
     text-align: center;
     margin: 10px;
 }
