@@ -171,7 +171,7 @@ $(function() {
               $("#btn-close").remove();
               $("#right").css("display", "none");
               $(".square").remove();
-              $("#center").width("65%");
+              $("#center").width("50%");
               $("#title").text("");
               $("#page").text("");
             });
