@@ -222,7 +222,7 @@ $(function() {
               $("#btn-close").remove();
               $("#right").css("display", "none");
               $(".square").remove();
-              $("#center").width("50%");
+              $("#center").width("65%");
               $("#title").text("");
               $("#page").text("");
             });
