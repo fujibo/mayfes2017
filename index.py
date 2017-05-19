@@ -72,7 +72,7 @@ def search():
 if __name__ == '__main__':
     # 元々1MBが上限
     global dirname
-    BaseRequest.MEMFILE_MAX *= 4
+    BaseRequest.MEMFILE_MAX *= 16
 
     retrival.init()
     if not os.path.isdir("./images"):

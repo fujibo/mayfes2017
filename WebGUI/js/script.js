@@ -114,10 +114,6 @@ $(function() {
         }
     });
 
-    setImage(1, "sample.jpg", 100, 0, 200, 400);
-    setImage(2, "sample.jpg", 0, 0, 640, 400);
-    setImage(3, "sample.jpg", 500, 100, 640, 400);
-
     $("div .images").each(function(i, element) {
         $(element).draggable({
             opacity: 0.7,
@@ -156,12 +152,67 @@ $(function() {
         });
     });
 
+	var initX;
+	var initY;
+	var endX;
+	var endY;
+	var isDragging;
+
+	$(".manga_page")
+	.mousedown(function(event){
+			event.preventDefault();
+			initX = event.pageX - $(".manga_page").offset().left - $("#manga_page_img").position().left;
+			initY = event.pageY - $(".manga_page").offset().top;
+			isDragging = true;
+	}).mouseup(function(event) {
+		if(isDragging) {
+			drag_search(event);
+			isDragging = false;
+		}
+	}).mouseleave(function(event) {
+		if(isDragging) {
+			isDragging = false;
+		}
+	});
+
+	function drag_search(event){
+			var img = new Image();
+			img.src = $("#manga_page_img").attr("src");
+			img.onload = function() {
+				var rate = img.width / ($(".manga_page").width()) / 2;
+				endX = event.pageX - $(".manga_page").offset().left - $("#manga_page_img").position().left;
+				endY = event.pageY - $(".manga_page").offset().top;
+				var offset = $("#manga_page_img").position().left;
+				if(Math.abs(endX - initX) > Math.abs(endY-initY)) {
+					if(endY > initY) {
+						endY = endY + Math.abs(endX-initX) - Math.abs(endY-initY);
+					} else {
+						initY = initY + Math.abs(endX-initX) - Math.abs(endY-initY);
+					}
+				} else {
+					if(endX > initX) {
+						endX = endX + Math.abs(endY-initY) - Math.abs(endX-initX);
+					} else {
+						initX = initX + Math.abs(endY-initY) - Math.abs(endX-initX);
+					}
+				}
+				ctx.drawImage(img, Math.min(initX, endX) * rate, Math.min(initY,endY) * rate, Math.abs(endX-initX) * rate, Math.abs(endY-initY) * rate, 0, 0, $("#canvas").width(), $("#canvas").height());
+				var pngData = canvas.toDataURL().split(",")[1];
+				loadData(pngData, 0);
+				$(".square").css("width", Math.abs(initX - endX) +"px");
+				$(".square").css("height", Math.abs(initY - endY)+"px");
+				$(".square").css("top", Math.min(initY, endY)-$(".manga_page").offset().top+"px");
+				console.log($(".manga_page").offset().left);
+				$(".square").css("left", Math.min(initX, endX) + offset +"px");
+			}
+	}
+
     function show_bigimage(element) {
           if($("#manga_page_img").length === 0) {
             $(".manga_page").append("<img src=\"" + $(element).find('img').attr("src") + "\" id=\"manga_page_img\"/>");
             $(".manga_page").append("");
             $(".manga_page").append("<div class=\"square\"style=\"position:absolute;\"/>");
-            $(".manga_page").append("<button id=\"btn-close\" class=\"ui-widget ui-button\" style=\"position: absolute; right: 0px; top: 0px\"></button>");
+            $("#wrapper").append("<button id=\"btn-close\" class=\"ui-widget ui-button\" style=\"position: absolute; right: 10px; top: 10px\"></button>");
             $("#center").width("30%");
             $("#right").css("display", "inline-block");
             $("#btn-close").button({
@@ -210,7 +261,11 @@ $(function() {
         prevX = null;
         prevY = null;
         var pngData = canvas.toDataURL().split(',')[1];
-        $.ajax({
+	loadData(pngData, is_new);
+    }
+
+    function loadData(pngData, is_new) {
+       $.ajax({
             url: "http://localhost:8080/searching",
             type: "POST",
             cache: false,
@@ -230,8 +285,8 @@ $(function() {
           $(element).css({"position":"relative"})
           $(element).children("img").attr({"src":"image/ajax-loader.gif"});
           $(element).children("img").css({"position":"absolute", "top":0, "right":0, "bottom":0, "left":0, "margin":"auto", "width":60});
-        });
-    }
+		});
+	}
 
     function clear() {
         ctx.fillStyle = "white";
